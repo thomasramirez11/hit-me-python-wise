@@ -2,105 +2,163 @@
 
 ## Lesson objective
 
-This lesson demonstrates how Python Boolean values and logical
-operators can be used to simulate a basic cybersecurity access-control
-decision.
+Learn how Python uses Boolean values and security conditions to:
 
-## Python concepts practiced
+- Grant or deny access
+- Detect suspicious behavior
+- Trigger a security alert
 
+---
+
+## Python concepts
+
+- `True` and `False`
 - Variables
-- Boolean values: `True` and `False`
-- The `or` operator
-- The `and` operator
-- The `not` operator
-- The `print()` function
+- `all()`
+- `any()`
+- `not`
+- Comparisons
+- `if` and `else`
+- F-strings
+
+---
 
 ## Cybersecurity scenario
 
-A security system evaluates several conditions before granting access:
+A user attempts to log in.
 
-- Is the password correct?
-- Is multi-factor authentication correct?
-- Was a failed login detected?
-- Was a suspicious IP address detected?
+The program checks:
 
-A correct password alone is not always enough. The system must evaluate
-all security conditions before making its final decision.
+- Whether the password is correct
+- Whether MFA was approved
+- Whether the account is active
+- Whether too many failed attempts occurred
+- Whether the device is unknown
 
-## Important security logic
+It then decides whether access should be granted and whether an alert should be generated.
 
-```python
-danger_detected = (
-    failed_login_detected
-    or suspicious_ip_detected
-)
-```
+---
 
-The `or` operator means that one danger signal is enough to activate
-the alert.
+## What This Lesson Demonstrates
+
+### Boolean values
 
 ```python
-access_granted = (
-    password_correct
-    and mfa_correct
-    and not danger_detected
-)
+password_correct = True
+mfa_approved = False
 ```
 
-Access is granted only when:
+Booleans represent two possible states:
 
-1. The password is correct.
-2. MFA is correct.
-3. No danger has been detected.
+```text
+True  = Yes / Approved / Active
+False = No / Denied / Inactive
+```
+
+### Access control with `all()`
+
+```python
+access_granted = all([
+    password_correct,
+    mfa_approved,
+    account_active
+])
+```
+
+`all()` requires every condition to be `True`.
+
+Python evaluates:
+
+```text
+True, False, True
+```
+
+Because MFA is `False`:
+
+```python
+access_granted = False
+```
+
+### Threat detection with `any()`
+
+```python
+danger_detected = any([
+    failed_attempts >= 5,
+    unknown_device,
+    not account_active
+])
+```
+
+`any()` requires only one condition to be `True`.
+
+There are six failed attempts and the device is unknown, so:
+
+```python
+danger_detected = True
+```
+
+### Reversing a value with `not`
+
+```python
+not account_active
+```
+
+`not` reverses a Boolean:
+
+```text
+not True  → False
+not False → True
+```
+
+### Final decision
+
+The program reaches these results:
+
+```python
+access_granted = False
+danger_detected = True
+```
+
+Therefore:
+
+- The login is denied
+- A security alert is generated
+
+---
 
 ## Expected output
 
 ```text
-Danger detected: True
+=== SECURITY LOGIN CHECK ===
+Password correct: True
+MFA approved: False
+Account active: True
+Failed attempts: 6
+Unknown device: True
+
 Access granted: False
+Danger detected: True
+
+Decision: Deny the login.
+Security action: Send an alert to the analyst.
 ```
 
-## Why access is denied
+---
 
-The password and MFA are correct, but a failed login was detected.
+## How to run
 
-Therefore:
+Open the terminal inside this folder and run:
 
-```text
-True or False = True
+```bash
+python lesson.py
 ```
 
-This makes `danger_detected` equal to `True`.
-
-Python then reverses that value:
-
-```text
-not True = False
-```
-
-The final access decision becomes:
-
-```text
-True and True and False = False
-```
-
-Therefore, access is denied.
+---
 
 ## Memory hooks
 
-- `or` = one alarm is enough
-- `and` = every security guard must approve
-- `not` = reverse the answer
-
-## What I learned
-
-I learned that Python can combine several Boolean conditions to make a
-security decision.
-
-I also learned that a user can provide the correct password and MFA but
-still be denied access when suspicious activity is detected.
-
-## Ethical-use statement
-
-This code is a safe educational simulation. It does not connect to a
-real authentication system or collect real user information.
+```text
+all() = Every guard must approve
+any() = One alarm is enough
+not   = Reverse the answer
+```
